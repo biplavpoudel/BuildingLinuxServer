@@ -24,7 +24,7 @@ Access the  ~ directory and clone this repository there.
 
 ```
 su -
-cd ~ && git clone https://github.com/daveprowse/bls-ddd.git
+cd ~ && git clone https://github.com/biplavpoudel/BuildingLinuxServer.git
 cd BuildingLinuxSever
 ```
 
@@ -56,6 +56,17 @@ If green color is shown, you are good to go!
 Ensure the server is listening on port 67 for incoming DHCP requests by checking all the open ports:
 ```
 ss -tulnw
+```
+
+## Update KVM's NAT Network Connection
+I am using a manually created NAT network called ServersNAT, in my KVM host, for all the VMs.
+```
+sudo virsh net-edit ServersNAT
+```
+So locate and remove the <dhcp> section inside <ip> element. Then reactivate the network as:
+```
+sudo virsh net-destroy ServersNAT
+sudo virsh net-start ServersNAT
 ```
 
 
