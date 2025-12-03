@@ -1,29 +1,48 @@
-# bls-ddd
-Config files for Building Linux Servers (DHCP, DNS, DS) Webinars and Course.
+# Building Linux Servers: DHCP, DNS and DS
+Config files for Building Linux Servers (DHCP, DNS, DS) Course.
+
 Note: These configuration files are designed for learning and testing purposes, and not for use in a production environment.
 
-!!! Important: If you are using Debian 11 (Bullseye), you will want to use the ISC Kea 2.0 repo. (as of June, 2022)!!!  See the script here for an automatic installation on Debian Bullseye: https://github.com/daveprowse/bls-ddd/blob/main/scripts-bash/kea-install-script.sh
+## Setup ISC-Kea reposiory:
+First setup Kea3.0 repository in debain as:
+```
+curl -1sLf \
+  'https://dl.cloudsmith.io/public/isc/kea-3-0/setup.deb.sh' \
+  | sudo -E bash
 
-Make sure you are logged in as root to a Debian system.
+```
+ Then install isc-kea-common packages as:
+ ```
+ apt install isc-kea-common
+ ```
 
-Access the  ~ directory:
+## Setup BuildingLinuxServer Repository:
+Now, make sure you are logged in as root to a Debian system.
+Access the  ~ directory and clone this repository there.
 
-cd ~
+```
+su -
+cd ~ && git clone https://github.com/daveprowse/bls-ddd.git
+cd BuildingLinuxSever
+```
 
-Download this repository there. 
+Copy the individual files to their respective locations as we proceed.
+Backup the original configurations file first:
 
-git clone https://github.com/daveprowse/bls-ddd.git
+## Configure Kea-DHCP4-Server
+For kea-dhcp4.conf file:
 
-That will create the bls-ddd directory. 
+```
+apt install isc-kea-dhcp4-server
+systemctl enable --now isc-kea-dhcp4-server.service
 
-Access it with: 
+mv /etc/kea/kea-dhcp4.conf /etc/kea/dhcp4.conf.bak
+cp /kea/kea-dhcp4.conf /etc/kea/
+```
 
-cd bls-ddd
 
-Copy the individual files to their respective locations as we proceed. 
-
-Enjoy!
-
-Notes: 
-1. For this test environment I am using Debian 10 (Buster) as a server for DHCP and DNS (with no GUI).
-2. The configuration files are based on one of my test labs that runs on the 172.21.0.0/16 network. Your IP addresses and computer names will vary.
+## Notes: 
+1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI).
+2. I have used separate Debian VMs for DHCP and DNS using KVM.
+3. The configuration files are based on one of my test labs that runs on the 10.0.2.0/24 network.
+4. Dhcp Server uses 10.0.2.4/24 and DNS Server uses 10.0.2.5/24
