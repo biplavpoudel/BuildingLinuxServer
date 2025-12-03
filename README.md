@@ -3,6 +3,8 @@ Config files for Building Linux Servers (DHCP, DNS, DS) Course.
 
 Note: These configuration files are designed for learning and testing purposes, and not for use in a production environment.
 
+For official documentation on installing kea packages, refer to: https://kb.isc.org/docs/isc-kea-packages
+
 ## Setup ISC-Kea reposiory:
 First setup Kea3.0 repository in debain as:
 ```
