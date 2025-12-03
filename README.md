@@ -28,18 +28,34 @@ cd ~ && git clone https://github.com/daveprowse/bls-ddd.git
 cd BuildingLinuxSever
 ```
 
-Copy the individual files to their respective locations as we proceed.
-Backup the original configurations file first:
-
 ## Configure Kea-DHCP4-Server
-For kea-dhcp4.conf file:
+For kea-dhcp4.conf file, install the kea-dhcp4 server and then, copy the individual files to their respective locations. Backup the original configurations file first.
 
 ```
 apt install isc-kea-dhcp4-server
-systemctl enable --now isc-kea-dhcp4-server.service
+systemctl disable isc-kea-dhcp4-server.service
 
 mv /etc/kea/kea-dhcp4.conf /etc/kea/dhcp4.conf.bak
 cp /kea/kea-dhcp4.conf /etc/kea/
+```
+
+Test the configuration now. Optionally, use journalctl for more in-depth system logs.
+```
+kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
+
+journalctl -u isc-kea-dhcp4-server.service
+```
+
+Fix any errors and start up the service:
+```
+systemctl enable --now isc-kea-dhcp4-server.service
+systemctl status isc-kea-dhcp4-server.service
+```
+If green color is shown, you are good to go!
+
+Ensure the server is listening on port 67 for incoming DHCP requests by checking all the open ports:
+```
+ss -tulnw
 ```
 
 
