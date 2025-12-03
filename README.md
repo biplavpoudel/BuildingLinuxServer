@@ -42,7 +42,7 @@ cp /kea/kea-dhcp4.conf /etc/kea/
 
 
 ## Notes: 
-1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI).
+1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
 2. I have used separate Debian VMs for DHCP and DNS using KVM.
-3. The configuration files are based on one of my test labs that runs on the 10.0.2.0/24 network.
-4. Dhcp Server uses 10.0.2.4/24 and DNS Server uses 10.0.2.5/24
+3. The configuration files are based on one of my test labs that runs on the 10.0.2.0/24 NAT network.
+4. DHCP Server uses 10.0.2.4/32 and DNS Server uses 10.0.2.5/32
