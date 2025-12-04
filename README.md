@@ -13,9 +13,9 @@ curl -1sLf \
   | sudo -E bash
 
 ```
- Then install isc-kea-common packages as:
+ Then install isc-kea as:
  ```
- apt install isc-kea-common
+ apt install isc-kea
  ```
 
 ## Setup BuildingLinuxServer Repository:
@@ -69,6 +69,61 @@ sudo virsh net-destroy ServersNAT
 sudo virsh net-start ServersNAT
 ```
 
+## Renew lease on client VMs
+Make sure you have isc-dhcp-client package installed.
+```
+sudo apt install isc-dhcp-client
+```
+Then renew the lease using:
+```
+sudo dhclient -r
+sudo dhclient
+```
+
+## Use Postgressql as Lease Database
+Ensure you build and compile the binary package with switch ```-D postgresql=enabled``` .
+For more info, visit: https://kea.readthedocs.io/en/kea-3.0.2/arm/install.html#building-with-postgresql-support
+
+```
+git clone https://gitlab.isc.org/isc-projects/kea.git
+cd kea
+git checkout 3.0.2
+meson setup build -D postgres=enabled
+meson compile -C build
+meson install -C build
+```
+
+After setup, update /etc/kea/kea-dhcp4.conf as:
+```
+"database": {
+    "type": "postgresql",
+    "host": "192.168.254.26",
+    "name": "kea_db",
+    "user": "kea_user",
+    "password": "****"
+}
+```
+
+In this example, I have set up PostgreSQL database in my KVM host so I used my host IP.
+
+Visit this link to configure the databse: https://kea.readthedocs.io/en/kea-3.0.2/arm/admin.html#pgsql-database-create
+
+In the host, modify `/var/lib/data/pgsql/pg_hba.conf` to include:
+```
+host  kea_db  kea_user  10.0.2.4/32 md5
+```
+
+Then test from dhcp1 as: `psql -h 192.168.254.26 -U kea_user -d kea_db`
+Then intialize database as: 
+```
+kea-admin db-init pgsql \
+  -h 192.168.254.26 \
+  -n kea_db \
+  -u kea_user \
+  -p ****
+```
+
+Took me a long time to figure it out!!!
 
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
