@@ -104,23 +104,28 @@ After setup, update /etc/kea/kea-dhcp4.conf as:
 }
 ```
 
-In this example, I have set up PostgreSQL database in my KVM host so I used my host IP.
+In this example, I have set up PostgreSQL database in my KVM host so I used my host IP `192.168.254.26`.
 
-Visit this link to configure the databse: https://kea.readthedocs.io/en/kea-3.0.2/arm/admin.html#pgsql-database-create
+Visit this link to configure the database: https://kea.readthedocs.io/en/kea-3.0.2/arm/admin.html#pgsql-database-create
 
 In the host, modify `/var/lib/data/pgsql/pg_hba.conf` to include:
 ```
 host  kea_db  kea_user  10.0.2.4/32 md5
 ```
 
+Add a firewall rule to allow incoming connection to 5432 port as:
+```
+sudo firewall-cmd --zone=libvirt --add-port=5432/tcp --permanent
+```
+
 Then test from dhcp1 as: `psql -h 192.168.254.26 -U kea_user -d kea_db`
 Then intialize database as: 
 ```
 kea-admin db-init pgsql \
-  -h 192.168.254.26 \
-  -n kea_db \
-  -u kea_user \
-  -p ****
+  -h '192.168.254.26' \
+  -n 'kea_db' \
+  -u 'kea_user' \
+  -p '****'
 ```
 
 Took me a long time to figure it out!!!
@@ -128,5 +133,5 @@ Took me a long time to figure it out!!!
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
 2. I have used separate Debian VMs for DHCP and DNS using KVM.
-3. The configuration files are based on one of my test labs that runs on the 10.0.2.0/24 NAT network.
-4. DHCP Server uses 10.0.2.4/32 and DNS Server uses 10.0.2.5/32
+3. The configuration files are based on one of my test labs that runs on the `10.0.2.0/24` NAT network.
+4. DHCP Server uses `10.0.2.4/32` and DNS Server uses `10.0.2.5/32`
