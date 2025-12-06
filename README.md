@@ -142,6 +142,49 @@ Now to benchmark, run `perfdhcp` against the kea-dhcp4 server `10.0.2.4`:
 perfdhcp 10.0.2.4
 ```
 
+To specify number of 4-way exchanges (DORA) for second, use:
+```
+perfdhcp -r <number_of_exchanges> 10.0.2.4
+```
+
+## Run Kea-DHCP4 Server as Container
+
+Create a network, say network1, with:
+```
+podman network create network1
+podman network inspect network1
+```
+
+Then we will pull the latest ubuntu image, set its network and MAC address and run it as a priviledged container:
+```
+podman create -ti --privileged --net=network1 --mac-address 1a:1b:1c:1d:1e:1f  ubuntu
+```
+
+You can rename container, in my case it was peaceful_sutherland; then check it and run as:
+```
+podman rename peaceful_sutherland kea-1
+podman container ls -a
+podman container start kea-1
+```
+
+Install packages externally using:
+```
+podman exec kea-1 apt install curl iputils-ping git net-tools vim -y
+```
+
+To enter into the container's `/bin/bash`, use:
+```
+podman exec -it kea-1 /bin/bash
+```
+ 
+Since systemctl is not running inside the kea-1 container, after installing `isc-kea` packages and configuring `kea-dhcp4.conf` file, you can use:
+```
+podman exec kea-1 /etc/init.d/isc-kea-dhcp4-server status
+podman exec kea-1 /etc/init.d/isc-kea-dhcp4-server start
+```
+
+Rest of the steps are pretty similar as running kea-dhcp4-server in VM.
+
 
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
