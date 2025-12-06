@@ -130,8 +130,22 @@ kea-admin db-init pgsql \
 
 Took me a long time to figure it out!!!
 
+## Benchmarking DHCPv4
+Install isc-kea repository in your client VM and then install perfdhcp package:
+```
+sudo apt install isc-kea-perfdhcp
+```
+Ensure the isc-kea version matches between client and server.
+
+Now to benchmark, run `perfdhcp` against the kea-dhcp4 server `10.0.2.4`:
+```
+perfdhcp 10.0.2.4
+```
+
+
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
 2. I have used separate Debian VMs for DHCP and DNS using KVM.
 3. The configuration files are based on one of my test labs that runs on the `10.0.2.0/24` NAT network.
 4. DHCP Server uses `10.0.2.4/32` and DNS Server uses `10.0.2.5/32`
+5. To use dhcp relay, you can use either `OPNSense`, `pfSense` or similar tools. Just attach both networks to the VM and set static IPs 10.0.2.220 and 192.168.122.x/32./32 for both networks respectively. Look into `kea-files/kea-dhcp4.conf.dhcprelay` for IP configurations. You still need to configure firewalls in the OPNSense VM.
