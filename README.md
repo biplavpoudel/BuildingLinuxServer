@@ -192,3 +192,4 @@ Rest of the steps are pretty similar as running kea-dhcp4-server in VM.
 3. The configuration files are based on one of my test labs that runs on the `10.0.2.0/24` NAT network.
 4. DHCP Server uses `10.0.2.4/32` and DNS Server uses `10.0.2.5/32`
 5. To use dhcp relay, you can use either `OPNSense`, `pfSense` or similar tools. Just attach both networks to the VM and set static IPs 10.0.2.220 and 192.168.122.x/32./32 for both networks respectively. Look into `kea-files/kea-dhcp4.conf.dhcprelay` for IP configurations. You still need to configure firewalls in the OPNSense VM.
+6. Sometimes, the client VMs aren't leased IPv6 addresses from kea-dhcp6 server. The existing IPv6 addresses are either link-local only or from SLAAC addresses (temporary and stable/EUI-64) assigned by router. To remedy that, run `sudo dhclient -6 -v <interface-name>`. Very confusing!!
