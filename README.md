@@ -278,13 +278,56 @@ systemctl enable --now isc-kea-dhcp-ddns-server.service
 ```
 Backup the existing files in `/etc/kea` and copy the files from the repo's `/kea-files/ddns-config-files` to the `/etc/kea` directory.
 
+Validate the configurations for both:
+```
+kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
+kea-dhcp-ddns -t /etc/kea/kea-dhcp-ddns.conf
+```
+Now let's head over to DNS server, ns1 (10.0.2.5) and add the line `allow-update { 10.0.2.4; };` in both forward and reverse lookup zones in `/etc/bind/named.conf.local`.
 
+Here is the file:
+```
+zone "example.com" 
+	{
+	type master;
+	file "/etc/bind/zones/db.example.com";
+	allow-update { 10.0.2.4; }; 
+	};
 
+zone "2.0.10.in-addr.arpa"
+	{
+	type master;
+	file "/etc/bind/zones/db.2.0.10";
+	allow-update { 10.0.2.4; };
+	};
+
+```
+This is unsecure for production as non-authenticated updates are being sent over to DNS from DHCP, without encryption using TSIG keys.
+
+## Disabling AppArmor for BIND
+Debian ships with an AppArmor profile for named that prevents BIND from writing to zone files located under `/etc/bind/zones/`.<br>
+For Dynamic DNS (DDNS) to work, BIND must be allowed to modify its zone files and create .jnl journal files.
+
+First lets list AppArmor profile belonging to bind daemon:
+```
+ls /etc/apparmor.d | grep named
+#>> usr.sbin.named
+```
+Then diable the AppArmor profile with:
+```
+ln -s /etc/apparmor.d/usr.sbin.named /etc/apparmor.d/disable/
+apparmor_parser -R /etc/apparmor.d/usr.sbin.named 
+```
+Restart the AppArmor and BIND:
+```
+systemctl restart apparmor
+systemctl restart named
+```
 
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
 2. I have used separate Debian VMs for DHCP and DNS using KVM.
 3. The configuration files are based on one of my test labs that runs on the `10.0.2.0/24` NAT network.
 4. DHCP Server uses `10.0.2.4/32` and DNS Server uses `10.0.2.5/32`
-5. To use dhcp relay, you can use either `OPNSense`, `pfSense` or similar tools. Just attach both networks to the VM and set static IPs 10.0.2.220 and 192.168.122.x/32./32 for both networks respectively. Look into `kea-files/kea-dhcp4.conf.dhcprelay` for IP configurations. You still need to configure firewalls in the OPNSense VM.
+5. To use dhcp relay, you can use either `OPNSense`, `pfSense` or similar tools. Just attach both networks to the VM and set static IPs 10.0.2.220 and 192.168.122.x/32 for both networks respectively. Look into `kea-files/kea-dhcp4.conf.dhcprelay` for IP configurations. You still need to configure firewalls in the OPNSense VM.
 6. Sometimes, the client VMs aren't leased IPv6 addresses from kea-dhcp6 server. The existing IPv6 addresses are either link-local only or from SLAAC addresses (temporary and stable/EUI-64) assigned by router. To remedy that, run `sudo dhclient -6 -v <interface-name>`. Very confusing!!
