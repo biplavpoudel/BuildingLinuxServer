@@ -220,6 +220,27 @@ nameserver 10.0.2.5
 ```
 Ensure the `/etc/kea/kea-dhcp4.conf` in dhcp1 (10.0.2.4) correctly points to 10.0.2.5 for DNS in `option-data/domain-name-servers` key.
 
+Since we want to mostly work in IPv4, we will direct named daemon to listen on IPv4 sockets only. 
+Modern Debian system uses **Systemd** instead of the old `/etc/default/bind9` file for configuring startup and environment variables for BIND service.
+For that, we create an override file using:
+```
+systemctl restart named
+```
+which shows the content of `/usr/lib/systemd/system/named.service` as reference.
+Then we add the following lines:
+```
+[Service]
+ExecStart=
+ExecStart=/usr/sbin/named -f $OPTIONS -4
+```
+This creates the override file at `/etc/systemd/system/named.service.d/override.conf`
+
+Then, we run:
+```
+systemctl daemon-reload
+systemctl restart named
+```
+It should be noted that `named.service` is an alias for `bind9.service`.
 
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
