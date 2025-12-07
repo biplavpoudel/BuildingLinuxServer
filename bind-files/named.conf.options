@@ -11,11 +11,11 @@ options {
 	// Uncomment the following block, and insert the addresses replacing 
 	// the all-0's placeholder.
 
-	listen-on  { 172.21.0.43; };
-	allow-query { localhost; 172.21.0.0/16; };
+	listen-on  { 10.0.2.5; };
+	allow-query { localhost; 10.0.2.0/24; };
 	allow-transfer { none; };
 
-	forwarders { 172.21.0.1; };
+	forwarders { 10.0.2.1; };
 	recursion yes;
 
 	//========================================================================
