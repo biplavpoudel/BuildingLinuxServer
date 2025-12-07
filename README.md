@@ -252,8 +252,8 @@ After copying `named.conf.*` into `/etc/bind`, create a new directory `/etc/bind
 cp BuildingLinuxServer/bind-files/named.conf.* /etc/bind/
 cd /etc/bind
 mkdir zones && cd zones
-cp ~/BuildingLinuxServer/bind-files/db.local db.example.com
-cp ~/BuildingLinuxServer/bind-files/db.127 db.2.0.10
+cp ~/BuildingLinuxServer/bind-files/db.example.com .
+cp ~/BuildingLinuxServer/bind-files/db.2.0.10 .
 ```
 
 
