@@ -5,6 +5,8 @@ Note: These configuration files are designed for learning and testing purposes, 
 
 For official documentation on installing kea packages, refer to: https://kb.isc.org/docs/isc-kea-packages
 
+# 1. Building DHCP Server
+
 ## Setup ISC-Kea reposiory:
 First setup Kea3.0 repository in debain as:
 ```
@@ -184,6 +186,21 @@ podman exec kea-1 /etc/init.d/isc-kea-dhcp4-server start
 ```
 
 Rest of the steps are pretty similar as running kea-dhcp4-server in VM.
+
+
+# 2. Building DNS Server
+
+## Installation of BIND Packages
+Install the necessary bind9 (Berkeley Internet Name Domain) packages:
+```
+apt install -y bind9 bind9-doc dnsutils
+systemctl status bind9.service
+```
+To check if bind9 daemon is repsonding or not, we can query NS records for root domain(.) using loopback address as DNS Server:
+```
+dig @127.0.0.1 . NS
+```
+
 
 
 ## Notes: 
