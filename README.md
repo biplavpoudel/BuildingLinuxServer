@@ -306,7 +306,8 @@ This is unsecure for production as non-authenticated updates are being sent over
 
 ## Disabling AppArmor for BIND
 Debian ships with an AppArmor profile for named that prevents BIND from writing to zone files located under `/etc/bind/zones/`.<br>
-For Dynamic DNS (DDNS) to work, BIND must be allowed to modify its zone files and create .jnl journal files.
+For Dynamic DNS (DDNS) to work, BIND must be allowed to modify its zone files and create .jnl journal files.<br>
+For simplicity, we will disable the apparmor profile for bind daemon.
 
 First lets list AppArmor profile belonging to bind daemon:
 ```
