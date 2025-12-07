@@ -7,6 +7,8 @@ For official documentation on installing kea packages, refer to: https://kb.isc.
 
 # 1. Building DHCP Server
 
+I have already created a Debian-based VM with FQDN, `dhcp1.example.com` with static IP: `10.0.2.4/32` to act as the DHCP Server for this network, ServersNAT.
+
 ## Setup ISC-Kea reposiory:
 First setup Kea3.0 repository in debain as:
 ```
@@ -190,17 +192,33 @@ Rest of the steps are pretty similar as running kea-dhcp4-server in VM.
 
 # 2. Building DNS Server
 
+I have created a Debian-based VM with FQDN, `ns1.example.com` with static IP: `10.0.2.5/32` to act as the DNS Server for this network, ServersNAT.
+
 ## Installation of BIND Packages
 Install the necessary bind9 (Berkeley Internet Name Domain) packages:
 ```
 apt install -y bind9 bind9-doc dnsutils
 systemctl status bind9.service
 ```
+
+Installation and configuring process is different for rpm-based distros like RedHat, CentOS and Fedora.
+```
+dnf install bind bind-utils
+systemctl status named
+systemctl start named
+
+vim /etc/named.conf     # in debian, it is in /etc/bind/named.conf
+```
+
 To check if bind9 daemon is repsonding or not, we can query NS records for root domain(.) using loopback address as DNS Server:
 ```
 dig @127.0.0.1 . NS
 ```
-
+Now, in `/etc/resolv/conf` change the nameserver to point to this VM's IP:
+```
+nameserver 10.0.2.5
+```
+Ensure the `/etc/kea/kea-dhcp4.conf` in dhcp1 (10.0.2.4) correctly points to 10.0.2.5 for DNS in `option-data/domain-name-servers` key.
 
 
 ## Notes: 
