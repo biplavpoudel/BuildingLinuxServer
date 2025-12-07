@@ -12,8 +12,8 @@ zone "example.com"
 	file "/etc/bind/zones/db.example.com"; 
 	};
 
-zone "21.172.in-addr.arpa"
+zone "2.0.10.in-addr.arpa"
 	{
 	type master;
-	file "/etc/bind/zones/db.21.172";
+	file "/etc/bind/zones/db.2.0.10";
 	};

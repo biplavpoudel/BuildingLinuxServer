@@ -210,10 +210,13 @@ systemctl start named
 vim /etc/named.conf     # in debian, it is in /etc/bind/named.conf
 ```
 
+### Testing BIND9 Daemon
 To check if bind9 daemon is repsonding or not, we can query NS records for root domain(.) using loopback address as DNS Server:
 ```
 dig @127.0.0.1 . NS
 ```
+
+## Configuration of BIND9 daemon
 Now, in `/etc/resolv/conf` change the nameserver to point to this VM's IP:
 ```
 nameserver 10.0.2.5
@@ -241,6 +244,18 @@ systemctl daemon-reload
 systemctl restart named
 ```
 It should be noted that `named.service` is an alias for `bind9.service`.
+
+## Configuration of Forward and Reverse Lookup Zones
+
+After copying `named.conf.*` into `/etc/bind`, create a new directory `/etc/bind/zones` and copy db.* files there.
+```
+cp BuildingLinuxServer/bind-files/named.conf.* /etc/bind/
+cd /etc/bind
+mkdir zones && cd zones
+cp ~/BuildingLinuxServer/bind-files/db.local db.example.com
+cp ~/BuildingLinuxServer/bind-files/db.127 db.2.0.10
+```
+
 
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
