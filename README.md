@@ -270,6 +270,14 @@ To check all zones at once:
 named-checkconf -z
 ```
 
+# 3. Configuring Dynamic DNS Server (DDNS)
+Install dhcp-ddns server using apt as:
+``` 
+apt install isc-kea-dhcp-ddns-server
+systemctl enable --now isc-kea-dhcp-ddns-server.service
+```
+Backup the existing files in `/etc/kea` and copy the files from the repo's `/kea-files/ddns-config-files` to the `/etc/kea` directory.
+
 
 
 

@@ -1,0 +1,15 @@
+$TTL	1w
+@	IN	SOA	ns1.example.com. hostmaster.example.com. (
+			3		; Serial
+			1w 		; Refresh
+			1d		; Retry
+			28d		; Expire
+			1w) 		; Negative Cache TTL
+			 
+; name servers - NS records
+		IN	NS	ns1.example.com.
+
+; PTR Records
+5 	IN	PTR	ns1.example.com.
+4 	IN	PTR	dhcp1.example.com.
+6	IN	PTR	id1.example.com.
