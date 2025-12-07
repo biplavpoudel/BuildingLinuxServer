@@ -113,7 +113,7 @@ In this example, I have set up PostgreSQL database in my KVM host so I used my h
 Visit this link to configure the database: https://kea.readthedocs.io/en/kea-3.0.2/arm/admin.html#pgsql-database-create
 
 In the host, modify `/var/lib/data/pgsql/pg_hba.conf` to include:
-```
+```c
 host  kea_db  kea_user  10.0.2.4/32 md5
 ```
 
@@ -217,31 +217,29 @@ dig @127.0.0.1 . NS
 ```
 
 ## Configuration of BIND9 daemon
-Now, in `/etc/resolv/conf` change the nameserver to point to this VM's IP:
-```
+Now, in `/etc/resolv.conf` change the nameserver to point to this VM's IP:
+```c
 nameserver 10.0.2.5
 ```
 Ensure the `/etc/kea/kea-dhcp4.conf` in dhcp1 (10.0.2.4) correctly points to 10.0.2.5 for DNS in `option-data/domain-name-servers` key.
 
 Since we want to mostly work in IPv4, we will direct named daemon to listen on IPv4 sockets only. 
-Modern Debian system uses **Systemd** instead of the old `/etc/default/bind9` file for configuring startup and environment variables for BIND service.
-For that, we create an override file using:
+Modern Debian system uses `/etc/default/named` for service runtime options, so open and modify the file:
 ```
-systemctl restart named
+sudo nano /etc/default/named
 ```
-which shows the content of `/usr/lib/systemd/system/named.service` as reference.
-Then we add the following lines:
+Locate `OPTIONS` line and append `-4`.
+```ini
+OPTIONS="-u bind -4"
 ```
-[Service]
-ExecStart=
-ExecStart=/usr/sbin/named -f $OPTIONS -4
-```
-This creates the override file at `/etc/systemd/system/named.service.d/override.conf`
 
 Then, we run:
 ```
-systemctl daemon-reload
 systemctl restart named
+```
+To confirm BIND no longer listens on IPv6 sockets:
+```
+ss -tulpn | grep named
 ```
 It should be noted that `named.service` is an alias for `bind9.service`.
 
@@ -255,6 +253,24 @@ mkdir zones && cd zones
 cp ~/BuildingLinuxServer/bind-files/db.example.com .
 cp ~/BuildingLinuxServer/bind-files/db.2.0.10 .
 ```
+
+## Verifying Zones and Testing DNS Server
+You can check zone files using:
+```
+named-checkconf
+```
+To check individual zone file:
+```
+named-checkzone example.com /etc/bind/zones/db.example.com
+named-checkzone 2.0.10.in-addr.arpa /etc/bind/zones/db.2.0.10
+```
+
+To check all zones at once:
+```
+named-checkconf -z
+```
+
+
 
 
 ## Notes: 
