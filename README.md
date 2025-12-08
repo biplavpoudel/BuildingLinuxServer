@@ -389,8 +389,87 @@ cp cacert.p12 ~/backup/
 ## Administration of Directory Services
 To use IPA tools *(like, ipa user-add)*, we need kerberos ticket, which we can get using:
 ```
-  kinit admin
+kinit admin
 ```
+
+To add user with password and bash login shell:
+```
+ipa user-add hk --first Harry --last Kane --manager biplav --email=harry@gmail.com --homedir=/home/hkane --password --shell=/bin/bash
+```
+The resulting prompt and output is displayed as:
+```json
+Password: 
+Enter Password again to verify: 
+---------------
+Added user "hk"
+---------------
+  User login: hk
+  First name: Harry
+  Last name: Kane
+  Full name: Harry Kane
+  Display name: Harry Kane
+  Initials: HK
+  Home directory: /home/hkane
+  GECOS: Harry Kane
+  Login shell: /bin/bash
+  Principal name: hk@EXAMPLE.COM
+  Principal alias: hk@EXAMPLE.COM
+  User password expiration: 20251208142811Z
+  Email address: harry@gmail.com
+  UID: 842600008
+  GID: 842600008
+  Manager: biplav
+  Password: True
+  Member of groups: ipausers
+  Kerberos keys available: True
+```
+
+To find information on a user, we can use:
+```
+ipa user-find bip
+``` 
+with resulting output as:
+```json
+--------------
+1 user matched
+--------------
+  User login: biplav
+  First name: Biplav
+  Last name: Poudel
+  Home directory: /home/biplav
+  Login shell: /bin/bash/
+  Principal name: biplav@EXAMPLE.COM
+  Principal alias: biplav@EXAMPLE.COM, bp@EXAMPLE.COM
+  Email address: bp@example.com
+  UID: 842600006
+  GID: 842600006
+  Account disabled: False
+----------------------------
+Number of entries returned 1
+----------------------------
+```
+
+For information on all users:
+```
+ipa user-find --all
+```
+
+To edit user information, we can use:
+```
+ipa user-mod <user_login> [--addattr/--rename/--set-attr/...]=<new_value>
+
+ipa user-mod hk --rename=hkane
+ipa user-mod hkane --email=hkane@gmail.com
+```
+
+To delete specific user:
+```
+ipa user-del hkane
+```
+
+We can use GUI to manage users by entering url for the id1 server in any browser, which in my case, is: `http://10.0.2.6`, that resolves to `id1.example.com`, and logging in as IPA Admin.
+![alt text](image.png)
+
 
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
