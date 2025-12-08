@@ -391,8 +391,9 @@ To use IPA tools *(like, ipa user-add)*, we need kerberos ticket, which we can g
 ```
 kinit admin
 ```
+### 1. Managing Users:
 
-To add user with password and bash login shell:
+1. To add user with password and bash login shell:
 ```
 ipa user-add hk --first Harry --last Kane --manager biplav --email=harry@gmail.com --homedir=/home/hkane --password --shell=/bin/bash
 ```
@@ -424,11 +425,11 @@ Added user "hk"
   Kerberos keys available: True
 ```
 
-To find information on a user, we can use:
+2. To find information on a user, we can use:
 ```
 ipa user-find bip
 ``` 
-with resulting output as:
+The resulting output as:
 ```
 --------------
 1 user matched
@@ -449,12 +450,12 @@ Number of entries returned 1
 ----------------------------
 ```
 
-For information on all users:
+3. For information on all users:
 ```
 ipa user-find --all
 ```
 
-To edit user information, we can use:
+4. To edit user information, we can use:
 ```
 ipa user-mod <user_login> [--addattr/--rename/--set-attr/...]=<new_value>
 
@@ -462,13 +463,73 @@ ipa user-mod hk --rename=hkane
 ipa user-mod hkane --email=hkane@gmail.com
 ```
 
-To delete specific user:
+5. To delete specific user:
 ```
 ipa user-del hkane
 ```
 
-We can use GUI to manage users by entering url for the id1 server in any browser, which in my case, is: `http://10.0.2.6`, that resolves to `id1.example.com`, and logging in as IPA Admin. <br>
-![IPA GUI Webpage](image.png)
+We can use GUI to manage users by entering url for the id1 server in any browser, which in my case, is: `https://10.0.2.6`, that resolves to `id1.example.com`, and logging in as IPA Admin. <br>
+![IPA GUI Webpage](users-gui.png)
+
+
+### 2. Managing Groups:
+
+To find all groups, we run:
+```
+ipa group-find --all
+```
+
+1. Similar to adding users, we can add groups like:
+```
+ipa group-add Developers --desc="Programmers"
+```
+ Output as:
+```
+------------------------
+Added group "developers"
+------------------------
+  Group name: developers
+  Description: Programmers
+  GID: 842600010
+```
+
+2. Similarly, to add a user to a group, we use:
+```
+ipa group-add-member Developers --users=hkane
+```
+Output as:
+```
+Group name: developers
+Description: Programmers
+GID: 842600010
+Member users: hkane
+-------------------------
+Number of members added 1
+-------------------------
+```
+3. To remove specific user, we run: 
+```
+ipa group-remove-member Developer --users=hkane
+```
+
+4. To add an existing member group to a group, we run:
+```
+ipa group-add-member Developers --groups=Engineers
+```
+Output:
+```
+  Group name: developers
+  Description: Programmers
+  GID: 842600010
+  Member users: hkane
+  Member groups: engineers
+-------------------------
+Number of members added 1
+-------------------------
+```
+
+Inside the **User Groups/developers** in GUI, we can see: ![IPA GUI Groups](groups-gui.png)
+
 
 
 ## Notes: 
