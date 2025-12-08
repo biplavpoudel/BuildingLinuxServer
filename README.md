@@ -331,14 +331,27 @@ To build a Directory Service, we need to install `RedHat Identity Management (Id
 ```
 dnf install ipa-server
 ```
-**Note:** Since all IdM server packages are now available in standard AppStream repository, we no longer need to enable it with *`dnf  module enable idm:DL1 && dnf distro-sync`*<br>
+**Note:** Since all IdM server packages are now available in standard AppStream repository, we no longer need to enable it with: *`dnf module enable idm:DL1 && dnf distro-sync`* command.<br>
 Now to configure IPA (Identity, Policy and Audit), we run:
 ```
 ipa-server-install
 ```
 Here we setup FQDN, Hostname, Kerberos Realm, Directory Manager, IPA Admin, self-signed CAs and many more.
 
-
+We need to copy the generated DNS records inside `/tmp/ipa.system.records.0v1xmmd3.db/` to the `ns1.example.com` DNS server.<br>
+So, from `id1.example.com` VM, run:
+```
+rsync /tmp/ipa.system.records.0v1xmmd3.db user@10.0.2.5:/home/user
+```
+Then inside the `ns1.example.com` VM, we append the records to `/etc/bind/zones/db.example.com` using >> (append redirection operator):
+```
+cat /home/user/ipa.system.records.0v1xmmd3.db >> /etc/bind/zones/db.example.com
+printf "\n" >> /etc/bind/zones/db.example.com
+```
+To check and validate, run: 
+```
+named-checkzone example.com /etc/bind/zones/db.example.com
+```
 
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.

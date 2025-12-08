@@ -15,7 +15,7 @@ options {
 	allow-query { localhost; 10.0.2.0/24; };
 	allow-transfer { none; };
 
-	forwarders { 10.0.2.1; };
+	forwarders { 10.0.2.1; 8.8.8.8; };
 	recursion yes;
 
 	//========================================================================
