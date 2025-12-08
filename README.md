@@ -325,6 +325,21 @@ systemctl restart apparmor
 systemctl restart named
 ```
 
+# 4. Building Directory Server
+I have decided to use a RedHat VM as DS Server (10.0.2.6) with fqdn: `id1.example.com`.<br>
+To build a Directory Service, we need to install `RedHat Identity Management (IdM)` as our centralized IAM software solution.<br>
+```
+dnf install ipa-server
+```
+**Note:** Since all IdM server packages are now available in standard AppStream repository, we no longer need to enable it with *`dnf  module enable idm:DL1 && dnf distro-sync`*<br>
+Now to configure IPA (Identity, Policy and Audit), we run:
+```
+ipa-server-install
+```
+Here we setup FQDN, Hostname, Kerberos Realm, Directory Manager, IPA Admin, self-signed CAs and many more.
+
+
+
 ## Notes: 
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
 2. I have used separate Debian VMs for DHCP and DNS using KVM.
