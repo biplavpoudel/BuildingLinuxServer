@@ -467,8 +467,8 @@ To delete specific user:
 ipa user-del hkane
 ```
 
-We can use GUI to manage users by entering url for the id1 server in any browser, which in my case, is: `http://10.0.2.6`, that resolves to `id1.example.com`, and logging in as IPA Admin.
-![alt text](image.png)
+We can use GUI to manage users by entering url for the id1 server in any browser, which in my case, is: `http://10.0.2.6`, that resolves to `id1.example.com`, and logging in as IPA Admin. <br>
+![IPA GUI Webpage](image.png)
 
 
 ## Notes: 
