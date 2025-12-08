@@ -391,7 +391,7 @@ To use IPA tools *(like, ipa user-add)*, we need kerberos ticket, which we can g
 ```
 kinit admin
 ```
-### 1. Managing Users:
+### 1. Managing Users
 
 1. To add user with password and bash login shell:
 ```
@@ -472,7 +472,7 @@ We can use GUI to manage users by entering url for the id1 server in any browser
 ![IPA GUI Webpage](users-gui.png)
 
 
-### 2. Managing Groups:
+### 2. Managing Groups
 
 To find all groups, we run:
 ```
@@ -530,9 +530,73 @@ Number of members added 1
 
 Inside the **User Groups/developers** in GUI, we can see: ![IPA GUI Groups](groups-gui.png)
 
+### 3. Managing Hosts
+We are particularly concerned with managing servers, not client VMs.
+
+1. To find available systems associated with ipa, we run:
+```
+ipa host-find --all
+```
+2. We can add hosts using FQDN if the host has corresponding DNS A/AAAA record in the network's DNS Server, which in our case is `ns1.example.com`.
+```
+ipa host-add dhcp1.example.com
+ipa host-add ns1.example.com
+```
+3. To delete a specific host, just run (for example):
+```
+ipa host-del ns1.example.com
+```
+4. To modify an exisiting host,
+```
+ipa host-mod dhcp1.example.com --desc="DHCPv4 server" --os=Debian-13
+```
+Output:
+```
+  ---------------------------------
+  Modified host "dhcp1.example.com"
+  ---------------------------------
+    Host name: dhcp1.example.com
+    Description: DHCPv4 server
+    Operating system: Debian-13
+    Principal name: host/dhcp1.example.com@EXAMPLE.COM
+    Principal alias: host/dhcp1.example.com@EXAMPLE.COM
+    Password: False
+    Keytab: False
+    Managed by: dhcp1.example.com
+```
+
+### 4. Working with Policies (like Kerberos Ticketing)
+1. To see kerberos ticket policy for users and admin, we can run:
+```
+ipa krbtpolicy-show
+ipa krbtpolicy-show admin
+``` 
+Before: (Same for admin and non-admin users)
+```
+Max life: 86400
+Max renew: 604800
+```
+
+2. Now let's modify max life from 24 hours to 1 hour for admin:
+```
+ipa krbtpolicy-mod admin --maxlife=3600
+ipa krbtpolicy-show admin
+```
+Now, the output for admin is:
+```
+Max life: 3600
+Max renew: 604800
+```
+3. To reset to default values, we run:
+```
+ipa krbtpolicy-reset admin
+```
+
+We can also use GUI to access and modify policies for users: ![Policy GUI](policy-gui.png)
 
 
-## Notes: 
+
+## Additional Notes
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
 2. I have used separate Debian VMs for DHCP and DNS using KVM.
 3. The configuration files are based on one of my test labs that runs on the `10.0.2.0/24` NAT network.
