@@ -338,6 +338,7 @@ ipa-server-install
 ```
 Here we setup FQDN, Hostname, Kerberos Realm, Directory Manager, IPA Admin, self-signed CAs and many more.
 
+## Copy DNS Records from DS Server to DNS Server
 We need to copy the generated DNS records inside `/tmp/ipa.system.records.0v1xmmd3.db/` to the `ns1.example.com` DNS server.<br>
 So, from `id1.example.com` VM, run:
 ```
@@ -351,6 +352,44 @@ printf "\n" >> /etc/bind/zones/db.example.com
 To check and validate, run: 
 ```
 named-checkzone example.com /etc/bind/zones/db.example.com
+```
+And restart the service:
+```
+systemctl restart named
+```
+
+## Open Firewall Ports in DS Server
+We need to open these ports in the firewall:<br>
+**TCP Ports:**
+```
+80, 443: HTTP/HTTPS
+389, 636: LDAP/LDAPS
+88, 464: kerberos 
+```
+
+**UDP Ports:**
+```
+88, 464: kerberos
+123: ntp 
+```
+
+The commands to add the above TCP/UDP ports permanently are:
+```
+firewall-cmd --add-port=80/tcp --add-port=443/tcp --add-port=389/tcp --add-port=636/tcp --add-port=88/tcp --add-port=464/tcp --permanent
+firewall-cmd --add-port=88/udp --add-port=464/udp --add-port=123/udp --permanent
+firewall-cmd --reload
+firewall-cmd --list-ports 
+```
+
+Also backup the CA certificates stored as `cacert.p12`, inside root:
+```
+mkdir ~/backup
+cp cacert.p12 ~/backup/
+```
+## Administration of Directory Services
+To use IPA tools *(like, ipa user-add)*, we need kerberos ticket, which we can get using:
+```
+  kinit admin
 ```
 
 ## Notes: 
