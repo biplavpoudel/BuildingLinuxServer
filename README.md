@@ -397,7 +397,7 @@ To add user with password and bash login shell:
 ipa user-add hk --first Harry --last Kane --manager biplav --email=harry@gmail.com --homedir=/home/hkane --password --shell=/bin/bash
 ```
 The resulting prompt and output is displayed as:
-```json
+```
 Password: 
 Enter Password again to verify: 
 ---------------
@@ -429,7 +429,7 @@ To find information on a user, we can use:
 ipa user-find bip
 ``` 
 with resulting output as:
-```json
+```
 --------------
 1 user matched
 --------------
