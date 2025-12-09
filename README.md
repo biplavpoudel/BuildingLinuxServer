@@ -5,6 +5,8 @@ Note: These configuration files are designed for learning and testing purposes, 
 
 For official documentation on installing kea packages, refer to: https://kb.isc.org/docs/isc-kea-packages
 
+![Topology](images/ServersNAT-Topology.png)
+
 # 1. Building DHCP Server
 
 I have already created a Debian-based VM with FQDN, `dhcp1.example.com` with static IP: `10.0.2.4/32` to act as the DHCP Server for this network, ServersNAT.
@@ -469,7 +471,7 @@ ipa user-del hkane
 ```
 
 We can use GUI to manage users by entering url for the id1 server in any browser, which in my case, is: `https://10.0.2.6`, that resolves to `id1.example.com`, and logging in as IPA Admin. <br>
-![IPA GUI Webpage](users-gui.png)
+![IPA GUI Webpage](images/users-gui.png)
 
 
 ### 2. Managing Groups
@@ -528,7 +530,7 @@ Number of members added 1
 -------------------------
 ```
 
-Inside the **User Groups/developers** in GUI, we can see: ![IPA GUI Groups](groups-gui.png)
+Inside the **User Groups/developers** in GUI, we can see: ![IPA GUI Groups](images/groups-gui.png)
 
 ### 3. Managing Hosts
 We are particularly concerned with managing servers, not client VMs.
@@ -592,7 +594,7 @@ Max renew: 604800
 ipa krbtpolicy-reset admin
 ```
 
-We can also use GUI to access and modify policies for users: ![Policy GUI](policy-gui.png)
+We can also use GUI to access and modify policies for users: ![Policy GUI](images/policy-gui.png)
 
 ### 5. Connecting Client to Directory Service:
 In Fedora-based client VM, inside the same network as ns1, dhcp1 and id1 servers, we need to install `freeipa-client` package instead of RedHat's `ipa-server`:
