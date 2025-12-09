@@ -594,6 +594,20 @@ ipa krbtpolicy-reset admin
 
 We can also use GUI to access and modify policies for users: ![Policy GUI](policy-gui.png)
 
+### 5. Connecting Client to Directory Service:
+In Fedora-based client VM, inside the same network as ns1, dhcp1 and id1 servers, we need to install `freeipa-client` package instead of RedHat's `ipa-server`:
+```
+dnf install freeipa-client
+```
+Now to setup the IPA client, with home dir for users assigned from IdM, we run:
+```
+ipa-client-install --mkhomedir
+```
+### 6. Setting up User Accounts on Client:
+1. If you are using Gnome Desktop Environment in Fedora Client, you can head over to : **Settings > System > Users** and unlock the settings.<br>
+2. Choose **Enterprise Login** and add Domain (example.com), Username and Password for users from Directory Server. <br>
+3. If you are unsure, you can find all added users by running `ipa user-find --all` in the bash shell of directory service, `id1.example.com`. <br>
+4. After the user account setup, logout from current user and login as the new user.
 
 
 ## Additional Notes
