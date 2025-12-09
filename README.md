@@ -5,7 +5,9 @@ Note: These configuration files are designed for learning and testing purposes, 
 
 For official documentation on installing kea packages, refer to: https://kb.isc.org/docs/isc-kea-packages
 
+# Network Topology
 ![Topology](images/ServersNAT-Topology.png)
+
 
 # 1. Building DHCP Server
 
