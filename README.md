@@ -390,12 +390,12 @@ Also backup the CA certificates stored as `cacert.p12`, inside root:
 mkdir ~/backup
 cp cacert.p12 ~/backup/
 ```
-## Administration of Directory Services
+# 5. Administration of Directory Services
 To use IPA tools *(like, ipa user-add)*, we need kerberos ticket, which we can get using:
 ```
 kinit admin
 ```
-### 1. Managing Users
+## 1. Managing Users
 
 1. To add user with password and bash login shell:
 ```
@@ -476,7 +476,7 @@ We can use GUI to manage users by entering url for the id1 server in any browser
 ![IPA GUI Webpage](images/users-gui.png)
 
 
-### 2. Managing Groups
+## 2. Managing Groups
 
 To find all groups, we run:
 ```
@@ -534,7 +534,7 @@ Number of members added 1
 
 Inside the **User Groups/developers** in GUI, we can see: ![IPA GUI Groups](images/groups-gui.png)
 
-### 3. Managing Hosts
+## 3. Managing Hosts
 We are particularly concerned with managing servers, not client VMs.
 
 1. To find available systems associated with ipa, we run:
@@ -569,7 +569,7 @@ Output:
     Managed by: dhcp1.example.com
 ```
 
-### 4. Working with Policies (like Kerberos Ticketing)
+## 4. Working with Policies (like Kerberos Ticketing)
 1. To see kerberos ticket policy for users and admin, we can run:
 ```
 ipa krbtpolicy-show
@@ -598,7 +598,7 @@ ipa krbtpolicy-reset admin
 
 We can also use GUI to access and modify policies for users: ![Policy GUI](images/policy-gui.png)
 
-### 5. Connecting Client to Directory Service:
+## 5. Connecting Client to Directory Service:
 In Fedora-based client VM, inside the same network as ns1, dhcp1 and id1 servers, we need to install `freeipa-client` package instead of RedHat's `ipa-server`:
 ```
 dnf install freeipa-client
@@ -607,14 +607,14 @@ Now to setup the IPA client, with home dir for users assigned from IdM, we run:
 ```
 ipa-client-install --mkhomedir
 ```
-### 6. Setting up User Accounts on Client:
+## 6. Setting up User Accounts on Client:
 1. If you are using Gnome Desktop Environment in Fedora Client, you can head over to : **Settings > System > Users** and unlock the settings.<br>
 2. Choose **Enterprise Login** and add Domain (example.com), Username and Password for users from Directory Server. <br>
 3. If you are unsure, you can find all added users by running `ipa user-find --all` in the bash shell of directory service, `id1.example.com`. <br>
 4. After the user account setup, logout from current user and login as the new user.
 
-### 7. Real World Scenarios
-#### 1. Creation of IPA Sysadmin to replace default IPA Admin
+# 6. Real World Scenarios
+## 1. Creation of IPA Sysadmin to replace default IPA Admin
 It's better to use a different admin account with all the administrative rights, like **sysadmin**, for IPA administration and servers management, instead of a default keroberos *admin* and/or *root* account. Also it is more secure to use SSH keys instead of passwords for connecting to all servers.
 
 So, lets ssh into `dhcp1.example.com` and add `sysadmin` to sudoers group:
@@ -624,7 +624,7 @@ usermod -aG sudo sysadmin         # debian,ubuntu
 usermod -aG wheel sysadmin        # redhat,fedora,centos
 ```
 Repeat this step with all the hosts.
-#### 2. Passwordless authentication to remote servers
+## 2. Passwordless authentication to remote servers
 Now, we create a ssh keypair and use the .pub key to authenticate with all servers.
 ```
 ssh key-gen
@@ -634,7 +634,7 @@ ssh-copy-id sysadmin@10.0.2.6
 ```
 **ssh-copy-id** is a SSH wrapper that copy/paste the generated ssh public key to `~/.ssh/authorized_keys` for each server.
 
-#### 3. Tilix for tiling terminals
+## 3. Tilix for tiling terminals
 We can use tilix for managing multiple terminal sessions under a single window.
 Install in a Debian-based client using:
 ```
@@ -643,14 +643,14 @@ apt install tilix
 You can create horizontal split with: `Ctrl+Alt+R` and vertical split with: `Ctrl+Alt+D`
 and move between them using: `Alt+Arrows`
 
-#### 4. Add sysadmin account to IPA
+## 4. Add sysadmin account to IPA
 Inside `id1.example.com` DS Server, run:
 ```
 kinit admin
 ipa user-add sysadmin
 ipa group-add-member admins --user=sysadmin
 ```
-#### 5. Tmux for multiple terminal sessions in a single SSH Connection
+## 5. Tmux for multiple terminal sessions in a single SSH Connection
 Tmux can be be used to manage persistent, multi-terminal sessions within a single SSH Connection. It can be installed with:
 ```
 apt install tmux -y
@@ -659,7 +659,7 @@ Run `tmux` within a ssh session and use ***`Ctrl+B` + <specific commands*>** to 
 
 Follow the guide: https://www.redhat.com/en/blog/introduction-tmux-linux for some tips.
 
-## Additional Notes
+# Additional Notes
 1. For this test environment I am using Debian 13 (trixie) as a server for DHCP and DNS (with no GUI) with NAT for inter-VM communication.
 2. I have used separate Debian VMs for DHCP and DNS using KVM.
 3. The configuration files are based on one of my test labs that runs on the `10.0.2.0/24` NAT network.
