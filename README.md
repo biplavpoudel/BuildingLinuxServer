@@ -613,8 +613,8 @@ ipa-client-install --mkhomedir
 3. If you are unsure, you can find all added users by running `ipa user-find --all` in the bash shell of directory service, `id1.example.com`. <br>
 4. After the user account setup, logout from current user and login as the new user.
 
-## Real World Scenarios
-### 1. Creation of IPA Sysadmin to replace default IPA Admin
+### 7. Real World Scenarios
+#### 1. Creation of IPA Sysadmin to replace default IPA Admin
 It's better to use a different admin account with all the administrative rights, like **sysadmin**, for IPA administration and servers management, instead of a default keroberos *admin* and/or *root* account. Also it is more secure to use SSH keys instead of passwords for connecting to all servers.
 
 So, lets ssh into `dhcp1.example.com` and add `sysadmin` to sudoers group:
@@ -624,7 +624,7 @@ usermod -aG sudo sysadmin         # debian,ubuntu
 usermod -aG wheel sysadmin        # redhat,fedora,centos
 ```
 Repeat this step with all the hosts.
-### 2. Passwordless authentication to remote servers
+#### 2. Passwordless authentication to remote servers
 Now, we create a ssh keypair and use the .pub key to authenticate with all servers.
 ```
 ssh key-gen
@@ -634,7 +634,7 @@ ssh-copy-id sysadmin@10.0.2.6
 ```
 **ssh-copy-id** is a SSH wrapper that copy/paste the generated ssh public key to `~/.ssh/authorized_keys` for each server.
 
-### 3. Tilix for tiling terminals
+#### 3. Tilix for tiling terminals
 We can use tilix for managing multiple terminal sessions under a single window.
 Install in a Debian-based client using:
 ```
@@ -643,14 +643,14 @@ apt install tilix
 You can create horizontal split with: `Ctrl+Alt+R` and vertical split with: `Ctrl+Alt+D`
 and move between them using: `Alt+Arrows`
 
-### 4. Add sysadmin account to IPA
+#### 4. Add sysadmin account to IPA
 Inside `id1.example.com` DS Server, run:
 ```
 kinit admin
 ipa user-add sysadmin
 ipa group-add-member admins --user=sysadmin
 ```
-### 5. Tmux for multiple terminal sessions in a single SSH Connection
+#### 5. Tmux for multiple terminal sessions in a single SSH Connection
 Tmux can be be used to manage persistent, multi-terminal sessions within a single SSH Connection. It can be installed with:
 ```
 apt install tmux -y
