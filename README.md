@@ -73,7 +73,7 @@ I have also added two clients, with **Gnome Desktop Enviroment**, within the sam
 
 Here is the network topology of my virtualization configuration:
 
-![Topology](images/ServersNAT-Topology.png)
+![Topology](/images/linux_servers_1.png)
 
 ***Figure**: Network Topology for ServersNAT*
 <br>
